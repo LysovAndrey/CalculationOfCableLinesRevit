@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using System.Globalization;
 
 namespace CalculationCable {
 
@@ -48,7 +49,7 @@ namespace CalculationCable {
           }
         }
       }
-	  
+
       if (chekParam.Count != 0) {
         string value = "";
         foreach (var item in chekParam) {
@@ -95,7 +96,7 @@ namespace CalculationCable {
           case BuiltInCategory.OST_PipeFitting:
           case BuiltInCategory.OST_ConduitFitting:
             value = item.get_Parameter(parametrs["ADSK_Количество"]).AsDouble();
-            value = value  != 0 ? value : 0.05;
+            value = value != 0 ? value : 0.05;
             get_value = value;
             value = UnitUtils.ConvertToInternalUnits(value, DisplayUnitType.DUT_METERS);
             break;
@@ -120,7 +121,7 @@ namespace CalculationCable {
       elementSet = new FilteredElementCollector(doc).WhereElementIsNotElementType().WherePasses(catFilter).WherePasses(filterElement).ToList();
 
       Dictionary<ElementId, double> elementLength = new Dictionary<ElementId, double>();
-      string pattern = @";(\s+)?(?<ln>((\d+.)?\d+))$";
+      string pattern = @";(\s+)?(?<ln>((\d+[.,])?\d+))$";
       foreach (var item in elementSet) {
         switch ((BuiltInCategory)item.Category.Id.IntegerValue) {
           case BuiltInCategory.OST_DuctFitting:
@@ -132,17 +133,23 @@ namespace CalculationCable {
         var valueStr = item.get_Parameter(parametrs["BD_Состав кабельной продукции"]).AsString();
         try {
           if (Regex.IsMatch(valueStr, pattern, RegexOptions.IgnoreCase)) {
-            foreach (Match match in Regex.Matches(valueStr, pattern, RegexOptions.IgnoreCase))
-            {
+            foreach (Match match in Regex.Matches(valueStr, pattern, RegexOptions.IgnoreCase)) {
+              var decimalSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator.ToString();
               var number = match.Groups["ln"].Value;
-              number = number.Trim(';').Replace(',', '.');
+              if (decimalSeparator == ",") {
+                number = number.Trim(';').Replace('.', ',');
+              }
+              else {
+                number = number.Trim(';').Replace(',', '.');
+              }
               double.TryParse(number, out value);
               elementLength.Add(item.Id, UnitUtils.ConvertToInternalUnits(value, DisplayUnitType.DUT_METERS));
               item.get_Parameter(parametrs["BD_Длина вручную"]).Set(value);
             }
           }
         }
-        catch (Exception) { }
+        catch (Exception) {
+        }
       }
 
       foreach (var item in elementLength) {
@@ -158,10 +165,10 @@ namespace CalculationCable {
 
       filterElement = new ElementParameterFilter(rules);
       var elementIds = new FilteredElementCollector(doc).WhereElementIsNotElementType()
-        .WherePasses(catFilter).WherePasses(filterElement).ToElementIds();      
-      
+        .WherePasses(catFilter).WherePasses(filterElement).ToElementIds();
+
       foreach (var item in elementIds) {
-        double value = doc.GetElement(item).get_Parameter(parametrs["BD_Длина кабеля"]).AsDouble(); 
+        double value = doc.GetElement(item).get_Parameter(parametrs["BD_Длина кабеля"]).AsDouble();
         var unit = doc.GetElement(item).get_Parameter(parametrs["BD_Длина кабеля"]);
         if (unit.DisplayUnitType == DisplayUnitType.DUT_MILLIMETERS) {
           UnitUtils.ConvertToInternalUnits(value, DisplayUnitType.DUT_METERS);
@@ -172,8 +179,7 @@ namespace CalculationCable {
       FormatValueOptions valueOptions = new FormatValueOptions();
       valueOptions.SetFormatOptions(
       // Настройка отображения в метрах. Округление до 0.01, подавление нулей
-      new FormatOptions(DisplayUnitType.DUT_METERS)
-      {
+      new FormatOptions(DisplayUnitType.DUT_METERS) {
         Accuracy = 0.01,
         SuppressTrailingZeros = true
       });

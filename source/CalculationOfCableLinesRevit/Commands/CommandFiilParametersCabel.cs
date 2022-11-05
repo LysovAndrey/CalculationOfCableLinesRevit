@@ -7,10 +7,12 @@ using Autodesk.Revit.UI;
 using System.Collections.Generic;
 
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace CalculationCable {
 
   class Cables {
+    public ElementId Id { get; set; }
     public string Group { get; set; }
     public string Marks { get; set; }
     public string Length { get; set; }
@@ -86,60 +88,14 @@ namespace CalculationCable {
 
       var filterElement = new ElementParameterFilter(rules);
       var elementSet = new FilteredElementCollector(doc).WhereElementIsNotElementType().WherePasses(catFilter).WherePasses(filterElement).ToList();
-
-      Dictionary<ElementId, Cables> asd = new Dictionary<ElementId, Cables>();
-      foreach (var item in elementSet) {
-        var valueStr = item.get_Parameter(parametrs["BD_Состав кабельной продукции"]).AsString();
-        try {
-          string p = @";";
-          Regex regex = new Regex(p);
-          string[] substrings = regex.Split(valueStr);
-          string pattern = "";
-          switch (substrings.Length) {
-            case 2:
-              pattern = @"(?<mr>(.+));(\s+)?(?<ln>((\d+.)?\d+))$";
-              if (Regex.IsMatch(valueStr, pattern, RegexOptions.IgnoreCase)) {
-                break;
-              }
-              pattern = @"(?<gp>(.+));(\s+)?(?<mr>(.+))$";
-              if (Regex.IsMatch(valueStr, pattern, RegexOptions.IgnoreCase)) {
-                break;
-              }
-              pattern = @"(?<mr>(.+));";
-              break;
-            case 3:
-              pattern = @"(?<gp>(.+));(\s+)?(?<mr>(.+));(\s+)?(?<ln>((\d+.)?\d+))";
-              break;
-            default:
-              asd.Add(item.Id, new Cables { Group = valueStr, Marks = "", Length = "" });
-              pattern = @"\w+;";
-              continue;
-          }
-
-          if (Regex.IsMatch(valueStr, pattern, RegexOptions.IgnoreCase)) {
-            foreach (Match match in Regex.Matches(valueStr, pattern, RegexOptions.IgnoreCase)) {
-              string group = match.Groups["gp"].Value;
-              group = group.Trim(';');
-              if (group.Length == 0) {
-                group = "0";
-              }
-              var marks = match.Groups["mr"].Value;
-              marks = marks.Trim(';');
-              var length = match.Groups["ln"].Value;
-              length = length.Trim(';');
-              asd.Add(item.Id, new Cables { Group = group, Marks = marks, Length = length });
-            }
-          }
-        }
-        catch (Exception) { }
-      }
+      BDCableSet bd_cables = new BDCableSet(elementSet);
 
       using (Transaction t = new Transaction(doc)) {
         t.Start("Добавление параметра");
-        foreach (var item in asd) {
+        foreach (MyCable item in bd_cables) {
           try {
-            doc.GetElement(item.Key).get_Parameter(parametrs["BD_Марка кабеля"]).Set(item.Value.Group);
-            doc.GetElement(item.Key).get_Parameter(parametrs["BD_Обозначение кабеля"]).Set(item.Value.Marks);
+            doc.GetElement(item.Id).get_Parameter(parametrs["BD_Марка кабеля"]).Set(item.Group);
+            doc.GetElement(item.Id).get_Parameter(parametrs["BD_Обозначение кабеля"]).Set(item.CableType);
           }
           catch (Exception) {
           }
@@ -150,38 +106,38 @@ namespace CalculationCable {
       return Result.Succeeded;
     }
 
-    private int GetObjectsCount(Dictionary<BuiltInCategory, string> categoriesWithNames, Document doc)
-        => categoriesWithNames.Sum(categoryWithName => FillElements(GetElements(categoryWithName.Key, doc), categoryWithName.Value));
+    //private int GetObjectsCount(Dictionary<BuiltInCategory, string> categoriesWithNames, Document doc)
+    //    => categoriesWithNames.Sum(categoryWithName => FillElements(GetElements(categoryWithName.Key, doc), categoryWithName.Value));
 
 
-    private IDictionary<Element, string[]> GetElements(BuiltInCategory categoryElement, Document doc) {
-      var elementBunch = new FilteredElementCollector(doc)
-          .OfCategory(categoryElement)
-          .WhereElementIsNotElementType()
-          .Where(f => !string.IsNullOrEmpty(f.LookupParameter(Options.PARAMETER_NAME)?.AsString()))
-          .ToList();
+    //private IDictionary<Element, string[]> GetElements(BuiltInCategory categoryElement, Document doc) {
+    //  var elementBunch = new FilteredElementCollector(doc)
+    //      .OfCategory(categoryElement)
+    //      .WhereElementIsNotElementType()
+    //      .Where(f => !string.IsNullOrEmpty(f.LookupParameter(Options.PARAMETER_NAME)?.AsString()))
+    //      .ToList();
 
-      var elements = elementBunch.Select(x => new { Element = x, StrParts = x.LookupParameter(Options.PARAMETER_NAME).AsString().Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) })
-              .Where(x => x.StrParts.Length < Options.LENGTH_STR + 1 && x.StrParts.Length > 1)
-              .ToDictionary(x => x.Element, y => y.StrParts);
+    //  var elements = elementBunch.Select(x => new { Element = x, StrParts = x.LookupParameter(Options.PARAMETER_NAME).AsString().Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) })
+    //          .Where(x => x.StrParts.Length < Options.LENGTH_STR + 1 && x.StrParts.Length > 1)
+    //          .ToDictionary(x => x.Element, y => y.StrParts);
 
-      return elements;
-    }
+    //  return elements;
+    //}
 
-    private int FillElements(IDictionary<Element, string[]> elements, string errorText) {
-      try {
-        int i = 0;
-        foreach (var element in elements) {
-          element.Key.LookupParameter(Options.PARAMETER_MARK)?.Set(element.Value[0]);
-          element.Key.LookupParameter(Options.PARAMETER_GROUP)?.Set(element.Value[1]);
-          i++;
-        }
-        return i;
-      }
-      catch (Exception ex) {
-        TaskDialog.Show($"Ошибка {errorText}", ex.Message);
-      }
-      return 0;
-    }
+    //private int FillElements(IDictionary<Element, string[]> elements, string errorText) {
+    //  try {
+    //    int i = 0;
+    //    foreach (var element in elements) {
+    //      element.Key.LookupParameter(Options.PARAMETER_MARK)?.Set(element.Value[0]);
+    //      element.Key.LookupParameter(Options.PARAMETER_GROUP)?.Set(element.Value[1]);
+    //      i++;
+    //    }
+    //    return i;
+    //  }
+    //  catch (Exception ex) {
+    //    TaskDialog.Show($"Ошибка {errorText}", ex.Message);
+    //  }
+    //  return 0;
+    //}
   }
 }

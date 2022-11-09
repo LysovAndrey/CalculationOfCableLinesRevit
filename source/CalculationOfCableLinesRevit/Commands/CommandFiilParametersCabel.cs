@@ -88,11 +88,11 @@ namespace CalculationCable {
 
       var filterElement = new ElementParameterFilter(rules);
       var elementSet = new FilteredElementCollector(doc).WhereElementIsNotElementType().WherePasses(catFilter).WherePasses(filterElement).ToList();
-      BDCableSet bd_cables = new BDCableSet(elementSet);
+      BDCableSetBak bd_cables = new BDCableSetBak(elementSet);
 
       using (Transaction t = new Transaction(doc)) {
         t.Start("Добавление параметра");
-        foreach (MyCable item in bd_cables) {
+        foreach (BDCable item in bd_cables) {
           try {
             doc.GetElement(item.Id).get_Parameter(parametrs["BD_Марка кабеля"]).Set(item.Group);
             doc.GetElement(item.Id).get_Parameter(parametrs["BD_Обозначение кабеля"]).Set(item.CableType);

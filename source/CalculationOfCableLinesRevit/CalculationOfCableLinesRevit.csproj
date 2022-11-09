@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-		<LangVersion>8.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
     <BaseIntermediateOutputPath>$(SolutionDir)..\build</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'D2020|x64' ">
@@ -179,7 +179,6 @@
     <Compile Include="Commands\CommandCopyCabel.cs" />
     <Compile Include="Commands\CommandFiilParametersCabel.cs" />
     <Compile Include="Commands\CommandLengthCabel.cs" />
-    <Compile Include="Commands\CommandSetting.cs" />
     <Compile Include="Commands\CopyToBufferBD_СableСomposition.cs" />
     <Compile Include="MyCables.cs" />
     <Compile Include="Options.cs" />

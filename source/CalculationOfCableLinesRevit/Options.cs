@@ -6,7 +6,6 @@ using System.Collections.Generic;
 namespace CalculationCable {
 
   internal readonly struct Options {
-
     public static Dictionary<string, Guid> Parameter = new Dictionary<string, Guid>() {
         {"BD_Состав кабельной продукции", new Guid("f08f11b0-abe7-4ef0-bbaf-b80fd9243814")},
         {"BD_Марка кабеля", new Guid("049d1803-85a6-4dee-be4b-fe2eb7e5700f")},

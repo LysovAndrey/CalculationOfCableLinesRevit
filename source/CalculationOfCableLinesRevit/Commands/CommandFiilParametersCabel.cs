@@ -92,7 +92,7 @@ namespace CalculationCable {
 
       using (Transaction t = new Transaction(doc)) {
         t.Start("Добавление параметра");
-        foreach (BDCable item in bd_cables) {
+        foreach (BDCableBak item in bd_cables) {
           try {
             doc.GetElement(item.Id).get_Parameter(parametrs["BD_Марка кабеля"]).Set(item.Group);
             doc.GetElement(item.Id).get_Parameter(parametrs["BD_Обозначение кабеля"]).Set(item.CableType);

@@ -44,27 +44,28 @@ namespace CalculationCable {
 
     void Application_ViewActivated(object sender, Autodesk.Revit.UI.Events.ViewActivatedEventArgs e) {
       ActiveDocument = e.Document;
-      Debug.WriteLine($"Application_ViewActivated - {ActiveDocument.Title}");
       BDCableMagazine.GetInstance().Update(ActiveDocument);
     }
 
     void Application_Idling(object sender, Autodesk.Revit.UI.Events.IdlingEventArgs e) {
 
-      var str = ActiveDocument?.Title == null ? "Проекта нет" : ActiveDocument.Title;
-      Debug.WriteLine($"\nApplication_Idling - {str}");
-      if (BDCableMagazine.GetInstance().ActiveBDCableSet != null) {
+      Debug.WriteLine($"\nКоличество документов: {BDCableMagazine.GetInstance().Count}");
+
+      BDCableSet bDCables = BDCableMagazine.GetInstance().ActiveBDCableSet;
+      if (bDCables != null) {
         // Обновление BDCableSet активного документа
-        Debug.WriteLine($"\tКоличество документов - {BDCableMagazine.GetInstance().Count}");
-        BDCableMagazine.GetInstance().ActiveBDCableSet.Update();
-      } else {
-        // Набора BDCableSet в документе нет
-        Debug.WriteLine($"Базы нет");
+        bDCables.Update();
+
+        var count_copy = bDCables.GetElementsToCopy()?.Count;
+        var count_parsing = bDCables.GetElementsToErrorParsing()?.Count;
+        var count_update = bDCables.GetUpdatedElements()?.Count;
+
+        Debug.WriteLine($" update - {count_update}; parsing - {count_parsing}; copy - {count_copy}");
+
       }
     }
 
-    void Application_ApplicationClosing(object sender, Autodesk.Revit.UI.Events.ApplicationClosingEventArgs e) {
-      Debug.WriteLine("Application_ViewActivated");
-    }
+    void Application_ApplicationClosing(object sender, Autodesk.Revit.UI.Events.ApplicationClosingEventArgs e) { }
 
     void ControlledApplication_DocumentClosing(object sender, Autodesk.Revit.DB.Events.DocumentClosingEventArgs e) {
       if (BDCableMagazine.GetInstance().Count != 0) {
@@ -73,14 +74,14 @@ namespace CalculationCable {
     }
 
     void AddSplitButtonGroup(RibbonPanel panel) {
-      SplitButtonData group1Data = new SplitButtonData("Cabel", "Split Group Cabel\nВерсия: {curver}");
+      SplitButtonData group1Data = new SplitButtonData("Cabel", "Split CableType Cabel\nВерсия: {curver}");
       SplitButton splitButton = panel.AddItem(group1Data) as SplitButton;
       splitButton.IsSynchronizedWithCurrentItem = false;
       AddButtonInGroup(splitButton, "BD_Copy.png", "Cabel copy", "Copying cable", typeof(CommandCopyCabel));
       AddButtonInGroup(splitButton, "BD_Length.png", "Cabel length", "Calculation of cable length", typeof(CommandLengthCabel));
       AddButtonInGroup(splitButton, "BD_Fill.png", "Cabel fill parameters", "Fill of cable parameters", typeof(CommandFiilParametersCabel));
 #if DEBUG
-      AddButtonInGroup(splitButton, "BD_Copy.png", "Cabel to buffer", "Cabel to buffer", typeof(CopyToBufferBD_СableСomposition));
+      AddButtonInGroup(splitButton, "BD_Copy.png", "Update cabels", "Update cabels", typeof(CopyToBufferBD_СableСomposition));
 #endif
     }
 

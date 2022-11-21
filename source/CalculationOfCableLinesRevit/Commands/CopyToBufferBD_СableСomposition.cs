@@ -21,46 +21,69 @@ namespace CalculationCable {
 
     public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements) {
 
-      BDCableSet bd = new BDCableSet();
- 
+      BDCableSet cables = new BDCableSet();
+
+      var updated = cables.GetUpdatedElements();
+
+      var pagsing = cables.GetElementsToErrorParsing();
+
+      if (updated != null && updated.Count != 0) {
+
+        using (Transaction t = new Transaction(cables.ActiveDocument)) {
+          t.Start("Заполнение параметров");
+          foreach (var item in updated) {
+            var elem = cables.ActiveDocument.GetElement(item.Element.Id);
+            elem.get_Parameter(Global.Parameters["BD_Марка кабеля"]).Set(item.Group);
+            elem.get_Parameter(Global.Parameters["BD_Обозначение кабеля"]).Set(item.CableType);
+            elem.get_Parameter(Global.Parameters["BD_Длина кабеля"]).Set(item.Length);
+            try {
+              elem.get_Parameter(Global.Parameters["ADSK_Количество"]).Set(item.Quantity);
+            }
+            catch (Exception) {
+            }
+          }
+          t.Commit();
+        }
+      }
+
       return Result.Succeeded;
-
-      /*
-      Document doc = commandData.Application.ActiveUIDocument.Document;
-      Selection selection = commandData.Application.ActiveUIDocument.Selection;
-
-      IList<Reference> references = null;
-
-      try {
-        references = selection.PickObjects(ObjectType.Element, new SelectCable(), "Выбирете элементы с параметром BD_Состав кабельной продукции");
-      }
-      catch (Autodesk.Revit.Exceptions.OperationCanceledException) {
-        return Result.Cancelled;
-      }
-
-      List<Element> warning_elements = new List<Element>();
-      List<Element> ok_elements = new List<Element>();
-
-      foreach (var r in references) {
-        Element elem = doc.GetElement(r);
-        string value = elem.get_Parameter(Options.Parameter["BD_Состав кабельной продукции"]).AsString();
-        if (string.IsNullOrEmpty(value)) {
-          continue;
-        }
-        if (value.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length > 1) {
-          warning_elements.Add(elem);
-          continue;
-        }
-        ok_elements.Add(elem);
-      }
-
-
-      Debug.WriteLine($"Хороших элементов - \t{ok_elements.Count}");
-      Debug.WriteLine($"Плохих элементов - \t{warning_elements.Count}");
-      */
     }
   }
 
+
+  /*
+Document doc = commandData.Application.ActiveUIDocument.Document;
+Selection selection = commandData.Application.ActiveUIDocument.Selection;
+
+IList<Reference> references = null;
+
+try {
+  references = selection.PickObjects(ObjectType.Element, new SelectCable(), "Выбирете элементы с параметром BD_Состав кабельной продукции");
+}
+catch (Autodesk.Revit.Exceptions.OperationCanceledException) {
+  return Result.Cancelled;
+}
+
+List<Element> warning_elements = new List<Element>();
+List<Element> ok_elements = new List<Element>();
+
+foreach (var r in references) {
+  Element elem = doc.GetElement(r);
+  string value = elem.get_Parameter(Options.Parameter["BD_Состав кабельной продукции"]).AsString();
+  if (string.IsNullOrEmpty(value)) {
+    continue;
+  }
+  if (value.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length > 1) {
+    warning_elements.Add(elem);
+    continue;
+  }
+  ok_elements.Add(elem);
+}
+
+
+Debug.WriteLine($"Хороших элементов - \t{ok_elements.Count}");
+Debug.WriteLine($"Плохих элементов - \t{warning_elements.Count}");
+*/
 
   /// <summary>
   /// Фильтр выбора элементов с параметром BD_Состав кабельной продукции

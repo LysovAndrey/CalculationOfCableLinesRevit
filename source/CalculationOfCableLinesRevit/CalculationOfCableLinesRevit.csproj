@@ -180,7 +180,7 @@
     <Compile Include="Commands\CommandFiilParametersCabel.cs" />
     <Compile Include="Commands\CommandLengthCabel.cs" />
     <Compile Include="Commands\CopyToBufferBD_СableСomposition.cs" />
-    <Compile Include="MyCables.cs" />
+    <Compile Include="BDCableSet.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Start.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -8,63 +8,74 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CalculationCable</RootNamespace>
-    <AssemblyName>CalculationCable</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <!--<AssemblyName>CalculationCable</AssemblyName>-->
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <LangVersion>10.0</LangVersion>
     <BaseIntermediateOutputPath>$(SolutionDir)..\build</BaseIntermediateOutputPath>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'D2020|x64' ">
     <OutputPath>$(SolutionDir)..\bin\2020\</OutputPath>
+    <AssemblyName>BDCalculationCable2020</AssemblyName>
     <DefineConstants>RTV2020;TRACE;DEBUG</DefineConstants>
     <PlatformTarget>x64</PlatformTarget>
     <DebugType>pdbonly</DebugType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'R2020|x64'">
     <OutputPath>$(SolutionDir)..\bin\2020\</OutputPath>
+    <AssemblyName>BDCalculationCable2020</AssemblyName>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>RTV2020</DefineConstants>
     <Optimize>true</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'D2021|x64' ">
     <OutputPath>$(SolutionDir)..\bin\2021\</OutputPath>
+    <AssemblyName>BDCalculationCable2021</AssemblyName>
     <DefineConstants>RTV2021;TRACE;DEBUG</DefineConstants>
     <PlatformTarget>x64</PlatformTarget>
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'R2021|x64'">
     <OutputPath>$(SolutionDir)..\bin\2021\</OutputPath>
+    <AssemblyName>BDCalculationCable2021</AssemblyName>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>RTV2021;TRACE</DefineConstants>
     <Optimize>true</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'D2022|x64' ">
     <OutputPath>$(SolutionDir)..\bin\2022\</OutputPath>
+    <AssemblyName>BDCalculationCable2022</AssemblyName>
     <DefineConstants>RTV2022;TRACE;DEBUG</DefineConstants>
     <PlatformTarget>x64</PlatformTarget>
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'R2022|x64'">
     <OutputPath>$(SolutionDir)..\bin\2022\</OutputPath>
+    <AssemblyName>BDCalculationCable2022</AssemblyName>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>RTV2022;TRACE</DefineConstants>
     <Optimize>true</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'D2023|x64' ">
     <OutputPath>$(SolutionDir)..\bin\2023\</OutputPath>
+    <AssemblyName>BDCalculationCable2023</AssemblyName>
     <DefineConstants>RTV2023;TRACE;DEBUG</DefineConstants>
     <PlatformTarget>x64</PlatformTarget>
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'R2023|x64'">
     <OutputPath>$(SolutionDir)..\bin\2023\</OutputPath>
+    <AssemblyName>BDCalculationCable2023</AssemblyName>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>RTV2023;TRACE</DefineConstants>
     <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -80,6 +91,10 @@
   <Choose>
     <When Condition="'$(Configuration)' == 'D2020'">
       <ItemGroup>
+        <Reference Include="AdWindows">
+          <HintPath>C:\Program Files\Autodesk\Revit 2020\AdWindows.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
         <Reference Include="RevitAPI">
           <HintPath>C:\Program Files\Autodesk\Revit 2020\RevitAPI.dll</HintPath>
           <Private>False</Private>
@@ -92,6 +107,10 @@
     </When>
     <When Condition="'$(Configuration)' == 'R2020'">
       <ItemGroup>
+        <Reference Include="AdWindows">
+          <HintPath>C:\Program Files\Autodesk\Revit 2020\AdWindows.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
         <Reference Include="RevitAPI">
           <HintPath>C:\Program Files\Autodesk\Revit 2020\RevitAPI.dll</HintPath>
           <Private>False</Private>
@@ -104,6 +123,10 @@
     </When>
     <When Condition="'$(Configuration)' == 'D2021'">
       <ItemGroup>
+        <Reference Include="AdWindows">
+          <HintPath>C:\Program Files\Autodesk\Revit 2021\AdWindows.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
         <Reference Include="RevitAPI">
           <HintPath>C:\Program Files\Autodesk\Revit 2021\RevitAPI.dll</HintPath>
           <Private>False</Private>
@@ -116,6 +139,10 @@
     </When>
     <When Condition="'$(Configuration)' == 'R2021'">
       <ItemGroup>
+        <Reference Include="AdWindows">
+          <HintPath>C:\Program Files\Autodesk\Revit 2021\AdWindows.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
         <Reference Include="RevitAPI">
           <HintPath>C:\Program Files\Autodesk\Revit 2021\RevitAPI.dll</HintPath>
           <Private>False</Private>
@@ -128,6 +155,10 @@
     </When>
     <When Condition="'$(Configuration)' == 'D2022'">
       <ItemGroup>
+        <Reference Include="AdWindows">
+          <HintPath>C:\Program Files\Autodesk\Revit 2022\AdWindows.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
         <Reference Include="RevitAPI">
           <HintPath>C:\Program Files\Autodesk\Revit 2022\RevitAPI.dll</HintPath>
           <Private>False</Private>
@@ -140,6 +171,10 @@
     </When>
     <When Condition="'$(Configuration)' == 'R2022'">
       <ItemGroup>
+        <Reference Include="AdWindows">
+          <HintPath>C:\Program Files\Autodesk\Revit 2022\AdWindows.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
         <Reference Include="RevitAPI">
           <HintPath>C:\Program Files\Autodesk\Revit 2022\RevitAPI.dll</HintPath>
           <Private>False</Private>
@@ -152,6 +187,10 @@
     </When>
     <When Condition="'$(Configuration)' == 'D2023'">
       <ItemGroup>
+        <Reference Include="AdWindows">
+          <HintPath>C:\Program Files\Autodesk\Revit 2023\AdWindows.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
         <Reference Include="RevitAPI">
           <HintPath>C:\Program Files\Autodesk\Revit 2023\RevitAPI.dll</HintPath>
           <Private>False</Private>
@@ -164,6 +203,10 @@
     </When>
     <When Condition="'$(Configuration)' == 'R2023'">
       <ItemGroup>
+        <Reference Include="AdWindows">
+          <HintPath>C:\Program Files\Autodesk\Revit 2023\AdWindows.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
         <Reference Include="RevitAPI">
           <HintPath>C:\Program Files\Autodesk\Revit 2023\RevitAPI.dll</HintPath>
           <Private>False</Private>
@@ -177,13 +220,20 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Commands\CommandCopyCabel.cs" />
-    <Compile Include="Commands\CommandFiilParametersCabel.cs" />
-    <Compile Include="Commands\CommandLengthCabel.cs" />
-    <Compile Include="Commands\CopyToBufferBD_СableСomposition.cs" />
+    <Compile Include="Commands\CommandUpdateCabel.cs" />
     <Compile Include="BDCableSet.cs" />
-    <Compile Include="Options.cs" />
-    <Compile Include="Start.cs" />
+    <Compile Include="Global.cs" />
+    <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Ribbon\Ribbon.cs" />
+    <Compile Include="Ribbon\RibbonButton.cs" />
+    <Compile Include="Ribbon\RibbonPanel.cs" />
+    <Compile Include="Ribbon\RibbonTab.cs" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\BD_Copy.png" />
@@ -196,6 +246,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\BD_Parameter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

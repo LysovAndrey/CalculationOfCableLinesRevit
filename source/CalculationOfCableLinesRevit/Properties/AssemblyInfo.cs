@@ -20,7 +20,21 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Следующий GUID служит для идентификации библиотеки типов, если этот проект будет видимым для COM
+#if RTV2020
 [assembly: Guid("57892f29-7c5e-4343-88d3-b31552554e43")]
+#endif
+
+#if RTV2021
+[assembly: Guid("72E91112-5913-41FB-BACB-CD1F4F4566F9")]
+#endif
+
+#if RTV2022
+[assembly: Guid("49EC971B-710F-4D44-BF32-FAE54C317F80")]
+#endif
+
+#if RTV2023
+[assembly: Guid("F76DB3C8-BDB9-46AA-B756-814C7769D7E3")]
+#endif
 
 // Сведения о версии сборки состоят из указанных ниже четырех значений:
 //

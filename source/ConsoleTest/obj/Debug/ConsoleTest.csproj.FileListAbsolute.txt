@@ -1,8 +1,0 @@
-W:\programming\Plug-ins for Revit\CalculationOfCableLinesRevit\source\ConsoleTest\bin\Debug\ConsoleTest.exe.config
-W:\programming\Plug-ins for Revit\CalculationOfCableLinesRevit\source\ConsoleTest\bin\Debug\ConsoleTest.exe
-W:\programming\Plug-ins for Revit\CalculationOfCableLinesRevit\source\ConsoleTest\bin\Debug\ConsoleTest.pdb
-W:\programming\Plug-ins for Revit\CalculationOfCableLinesRevit\source\ConsoleTest\obj\Debug\ConsoleTest.csproj.AssemblyReference.cache
-W:\programming\Plug-ins for Revit\CalculationOfCableLinesRevit\source\ConsoleTest\obj\Debug\ConsoleTest.csproj.SuggestedBindingRedirects.cache
-W:\programming\Plug-ins for Revit\CalculationOfCableLinesRevit\source\ConsoleTest\obj\Debug\ConsoleTest.csproj.CoreCompileInputs.cache
-W:\programming\Plug-ins for Revit\CalculationOfCableLinesRevit\source\ConsoleTest\obj\Debug\ConsoleTest.exe
-W:\programming\Plug-ins for Revit\CalculationOfCableLinesRevit\source\ConsoleTest\obj\Debug\ConsoleTest.pdb

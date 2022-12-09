@@ -17,8 +17,8 @@ internal class CommandUpdateCabel : IExternalCommand {
     BDCableSet cables = new BDCableSet();
 
     var updated = cables.GetUpdatedElements();
-
-    // var pagsing = cables.GetElementsToErrorParsing();
+    //var copyElement = cables.GetElementsToCopy();
+    //var pagsing = cables.GetElementsToErrorParsing();
 
     if (updated != null && updated.Count != 0) {
 

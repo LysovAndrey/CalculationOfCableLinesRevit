@@ -9,7 +9,7 @@ using System.Globalization;
 
 namespace CalculationCable;
 
-internal static class Global {
+public static partial class Global {
 
   internal static double ConvertFromInternaMeters(double length) {
 #if RTV2020
@@ -118,11 +118,11 @@ internal class BDCableSet : HashSet<IBDCable> {
 
       if (tmp.Count != 0) {
 
-        list = new List<IBDCable>();
+        list = new();
         foreach (var item in tmp) {
           var compositionCabel = item.Source.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
           for (var i = 0; i < compositionCabel.Length; i++) {
-            var c = new BDCableImpl();
+            BDCableImpl c = new();
             c.Element = item.Element;
             c.Category = item.Category;
             c.Source = compositionCabel[i];
@@ -174,7 +174,7 @@ internal class BDCableSet : HashSet<IBDCable> {
         return (cable.HasUpdate == true && cable.State == BDState.Ok);
       }).ToList();
     }
-    return list.Count == 0 ? null : list;
+    return list?.Count == 0 ? null : list;
   }
 
   BDStatus Update(ref BDCableSet cables) {
@@ -186,10 +186,10 @@ internal class BDCableSet : HashSet<IBDCable> {
 
     if (elementSet != null && elementSet.Count != 0) {
 
-      HashSet<IBDCable> cur = new HashSet<IBDCable>(elementSet.Count);
+      HashSet<IBDCable> cur = new(elementSet.Count);
 
       foreach (var item in elementSet) {
-        BDCableImpl cable = new BDCableImpl(item);
+        BDCableImpl cable = new(item);
         if (cables.TryGetValue(cable, out var actual_cable)) {
           var update_cable = actual_cable as BDCableImpl;
           update_cable.Update(cable);
@@ -232,10 +232,10 @@ internal class BDCableSet : HashSet<IBDCable> {
 
       IList<ElementFilter> categorySet = new List<ElementFilter>(m_categories.Count());
       m_categories.ForEach(c => categorySet.Add(new ElementCategoryFilter(c)));
-      var catFilter = new LogicalOrFilter(categorySet);
+      LogicalOrFilter catFilter = new(categorySet);
 
       /// Фильтр заполненого параметра
-      var element = new FilteredElementCollector(ActiveDocument)
+      Element element = new FilteredElementCollector(ActiveDocument)
         .WherePasses(catFilter)
         .WhereElementIsNotElementType()
         .FirstElement();
@@ -245,11 +245,11 @@ internal class BDCableSet : HashSet<IBDCable> {
 #if RTV2023
       rules.Add(ParameterFilterRuleFactory.CreateSharedParameterApplicableRule("BD_Состав кабельной продукции"));
       rules.Add(ParameterFilterRuleFactory.CreateContainsRule(parametr.Id, ";"));
-      var parametr_filter = new ElementParameterFilter(rules);
+      ElementParameterFilter parametr_filter = new(rules);
 #else
       rules.Add(ParameterFilterRuleFactory.CreateSharedParameterApplicableRule("BD_Состав кабельной продукции"));
       rules.Add(ParameterFilterRuleFactory.CreateContainsRule(parametr.Id, ";", false));
-      var parametr_filter = new ElementParameterFilter(rules);
+      ElementParameterFilter parametr_filter = new(rules);
 #endif
 
       /// Фильтры выбора элементов
@@ -302,7 +302,7 @@ internal class BDCableSet : HashSet<IBDCable> {
       foreach (var categoryId in m_categories.Reverse<BuiltInCategory>()) {
         List<Category> categories = null;
         foreach (var param in Global.Parameters) {
-          Definition definition_ = Esld.Revit.Global.FindParameterInProject(ActiveDocument, param.Value);
+          Definition definition_ = Global.FindParameterInProject(ActiveDocument, param.Value);
           if (definition_ == null) {
             if (!bind_params.TryGetValue(param.Key, out categories)) {
               bind_params.Add(param.Key, null);
@@ -342,7 +342,7 @@ internal class BDCableSet : HashSet<IBDCable> {
             error_messages += "   - " + bp.Key + ";\n";
           }
           else {
-            warning_messages += $"\nПарметр \"{bp.Key}\" не назнечен категориям:\n";
+            warning_messages += $"\nПараметр \"{bp.Key}\" не назнечен категориям:\n";
             bp.Value.ForEach(x => warning_messages += "   - " + x.Name + ";\n");
           }
         }
@@ -372,7 +372,7 @@ internal class BDCableSet : HashSet<IBDCable> {
           // Привязка параметров из модели
           foreach (var item in bind_params.Reverse()) {
             if (item.Value != null) {
-              Definition definition_ = Esld.Revit.Global.FindParameterInProject(ActiveDocument, Global.Parameters[item.Key]);
+              Definition definition_ = Global.FindParameterInProject(ActiveDocument, Global.Parameters[item.Key]);
               ElementBinding element_bind = ActiveDocument.ParameterBindings.get_Item(definition_) as ElementBinding;
               element_bind.Categories.Cast<Category>().ToList().ForEach(c => add_categories.Insert(c));
               item.Value.ForEach(c => add_categories.Insert(c));
@@ -400,10 +400,10 @@ internal class BDCableSet : HashSet<IBDCable> {
 
             m_categories.ForEach(c => add_categories.Insert(Category.GetCategory(ActiveDocument, c)));
 
-            // Добавление пармаетров из ФОП
+            // Добавление параметров из ФОП
             foreach (var item in bind_params.Reverse()) {
               if (item.Value == null) {
-                Definition definition_ = Esld.Revit.Global.FindParameterInFile(ActiveDocument, Global.Parameters[item.Key]);
+                Definition definition_ = Global.FindParameterInFile(ActiveDocument, Global.Parameters[item.Key]);
                 if (definition_ == null) {
                   continue;
                 }
@@ -474,11 +474,11 @@ internal class BDCableSet : HashSet<IBDCable> {
       CableType = "";
       Quantity = 0;
       IsManuallyLength = Element.get_Parameter(Global.Parameters["BD_Длина вручную"]).AsInteger() == 1; // -1 не определено, 1 выбрано, 0 не выбрано
-      this.HasUpdate = true;
+      HasUpdate = true;
 
       if (!HasCopy(Source)) {
         State = BDState.Copy;
-        this.HasUpdate = false;
+        HasUpdate = false;
       }
       else if (SupportParsingBDParameter(Source, out string pattern)) {
         ParsingParametr(pattern);
@@ -486,14 +486,14 @@ internal class BDCableSet : HashSet<IBDCable> {
       }
       else {
         State = BDState.Parsing;
-        this.HasUpdate = false;
+        HasUpdate = false;
       }
     }
 
     public override bool Equals(object obj) {
 
       if (obj is BDCableImpl && obj == null) { return false; }
-      if (this.GetHashCode() == obj.GetHashCode()) { return true; }
+      if (GetHashCode() == obj.GetHashCode()) { return true; }
       else {
         return false;
       }
@@ -515,23 +515,23 @@ internal class BDCableSet : HashSet<IBDCable> {
         var len = c.Element.get_Parameter(Global.Parameters["BD_Длина кабеля"]).AsDouble();
         var qt = c.Element.get_Parameter(Global.Parameters["ADSK_Количество"]).AsDouble();
 
-        if (!this.Group.Equals(c.Group) || !this.Group.Equals(group)) { this.HasUpdate = true; }
-        else if (!this.CableType.Equals(c.CableType) || !this.CableType.Equals(cableType)) { this.HasUpdate = true; }
-        else if (!this.Length.Equals(c.Length) || !this.Length.Equals(len)) { this.HasUpdate = true; }
-        else if (!this.Quantity.Equals(c.Quantity) || !this.Quantity.Equals(qt)) { this.HasUpdate = true; }
-        else { this.HasUpdate = false; }
+        if (!Group.Equals(c.Group) || !Group.Equals(group)) { HasUpdate = true; }
+        else if (!CableType.Equals(c.CableType) || !CableType.Equals(cableType)) { HasUpdate = true; }
+        else if (!Length.Equals(c.Length) || !Length.Equals(len)) { HasUpdate = true; }
+        else if (!Quantity.Equals(c.Quantity) || !Quantity.Equals(qt)) { HasUpdate = true; }
+        else { HasUpdate = false; }
       }
       else {
-        this.HasUpdate = true;
+        HasUpdate = true;
       }
 
-      if (this.HasUpdate) {
-        this.Source = c.Source;
-        this.Group = c.Group;
-        this.CableType = c.CableType;
-        this.Length = c.Length;
-        this.Quantity = c.Quantity;
-        this.State = c.State;
+      if (HasUpdate) {
+        Source = c.Source;
+        Group = c.Group;
+        CableType = c.CableType;
+        Length = c.Length;
+        Quantity = c.Quantity;
+        State = c.State;
       }
     }
 

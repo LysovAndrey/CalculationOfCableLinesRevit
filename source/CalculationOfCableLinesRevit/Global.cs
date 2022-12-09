@@ -1,12 +1,9 @@
-﻿using Autodesk.Revit.DB;
-
-using System;
-using System.Drawing;
+﻿using System;
 using System.Linq;
-using System.Windows;
-using System.Windows.Media.Imaging;
 
-namespace Esld.Revit;
+using Autodesk.Revit.DB;
+
+namespace CalculationCable;
 
 public static partial class Global {
 
@@ -46,6 +43,9 @@ public static partial class Global {
 
     DefinitionFile fileSharedParameter = document.Application.OpenSharedParameterFile();
     Definition definition = null;
+    if (fileSharedParameter == null) {
+      return null;
+    }
 
     try {
       foreach (DefinitionGroup definitionGroup in fileSharedParameter.Groups.Reverse()) {

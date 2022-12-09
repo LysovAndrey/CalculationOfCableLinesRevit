@@ -2,8 +2,8 @@
 <RevitAddIns>
 	<AddIn Type="Application">
 		<Name>CalculationCable</Name>
-		<Assembly>W:\programming\Plug-ins for Revit\CalculationOfCableLinesRevit\bin\2022\BDCalculationCable2022.dll</Assembly>
-		<ClientId>49EC971B-710F-4D44-BF32-FAE54C317F80</ClientId>
+		<Assembly>BDCalculationCable2020.dll</Assembly>
+		<ClientId>57892f29-7c5e-4343-88d3-b31552554e43</ClientId>
 		<FullClassName>CalculationCable.Plugin</FullClassName>
 		<Text>Plugins BIMDATA</Text>
 		<Description>"Plugins BIMDATA"</Description>
@@ -11,6 +11,6 @@
 		<VendorDescription>alysov@mail.ru</VendorDescription>
 	</AddIn>
 </RevitAddIns>
-<!--Данный файл скопировать в папку "C:\ProgramData\Autodesk\Revit\Addins\2022"-->
+<!--Данный файл скопировать в папку "C:\ProgramData\Autodesk\Revit\Addins\2020"-->
 
 

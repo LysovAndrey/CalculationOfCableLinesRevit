@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
 
 namespace CalculationCable;
 
-public class Ribbon {
+public partial class Ribbon {
 
   public UIControlledApplication Application { get; }
 
@@ -18,19 +15,19 @@ public class Ribbon {
 
   public void Update(ViewActivatedEventArgs e) {
 
-    _tabs.ToList().ForEach(t => t.Value.Update(e));
+    //_tabs.ToList().ForEach(t => t.Value.Update(e));
 
-    //_tabs.TryGetValue("BIMDATA", out var tab);
+    _tabs.TryGetValue("BIMDATA", out var tab);
 
-    //if (e.Document.IsFamilyDocument) {
-    //  tab.Visible = false;
-    //}
-    //else {
-    //  tab.Visible = true;
-    //}
+    if (e.Document.IsFamilyDocument) {
+      tab.Visible = false;
+    }
+    else {
+      tab.Visible = true;
+    }
   }
 
-  public RibbonTab CreateTab(string name) {
+  public Tab CreateTab(string name) {
 
     if (string.IsNullOrWhiteSpace(name)) {
       throw new ArgumentNullException("name");
@@ -55,14 +52,13 @@ public class Ribbon {
     }
     Application.CreateRibbonTab(name);
     var tab = Autodesk.Windows.ComponentManager.Ribbon.FindTab(name);
-    RibbonTab tab2 = new(this, tab);
-    //tabs.Insert(num, tab2.get_RibbonTab());
+    Tab tab2 = new(this, tab);
     _tabs.Add(name, tab2);
 
     return tab2;
   }
 
-  public bool FindTab(string name, out RibbonTab tab) {
+  public bool FindTab(string name, out Tab tab) {
 
     if (string.IsNullOrWhiteSpace(name)) {
       throw new ArgumentNullException("name");
@@ -88,6 +84,5 @@ public class Ribbon {
     Application = application;
   }
 
-  Dictionary<string, RibbonTab> _tabs = new();
-
+  Dictionary<string, Tab> _tabs = new();
 }
